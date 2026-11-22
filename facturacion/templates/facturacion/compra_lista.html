@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block titulo %}Compras{% endblock %}
+{% block contenido %}
+<section class="panel ventas-panel">
+    <div class="encabezado-seccion">
+        <h1 class="titulo-pagina">Compras</h1>
+        <a class="boton boton-principal" href="{% url 'facturacion:compra_crear' %}">+ Nueva compra</a>
+    </div>
+    <form method="get" class="busqueda ventas-filtros">
+        <select name="proveedor" aria-label="Proveedor">
+            <option value="">Todos los proveedores</option>
+            {% for p in proveedores %}
+                <option value="{{ p.pk }}" {% if proveedor == p.pk|stringformat:"s" %}selected{% endif %}>{{ p }}</option>
+            {% endfor %}
+        </select>
+        <select name="tipo_pago" aria-label="Tipo de pago">
+            <option value="">Todos los tipos de pago</option>
+            {% for valor, etiqueta in tipos_pago %}
+                <option value="{{ valor }}" {% if tipo_pago == valor %}selected{% endif %}>{{ etiqueta }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filtrar</button>
+    </form>
+    <div class="tabla-contenedor">
+        <table class="tabla-ventas">
+            <thead>
+                <tr><th>N.º</th><th>Fecha</th><th>Proveedor</th><th>Pago</th><th>Total</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                {% for compra in compras %}
+                    <tr>
+                        <td>{{ compra.pk }}</td>
+                        <td>{{ compra.fecha_hora|date:"d/m/Y H:i" }}</td>
+                        <td>{{ compra.proveedor }}</td>
+                        <td>{{ compra.get_tipo_pago_display }}</td>
+                        <td>${{ compra.total }}</td>
+                        <td class="acciones-tabla">
+                            <a href="{% url 'facturacion:compra_detalle' compra.pk %}">Ver</a>
+                            <a href="{% url 'facturacion:compra_editar' compra.pk %}">Editar</a>
+                            <a class="accion-peligro" href="{% url 'facturacion:compra_eliminar' compra.pk %}">Eliminar</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="vacio">No hay compras que coincidan con el filtro.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "facturacion/paginacion.html" %}
+</section>
+{% endblock %}

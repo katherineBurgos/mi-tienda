@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block titulo %}Proveedores{% endblock %}
+{% block contenido %}
+<section class="panel">
+    <div class="encabezado-seccion">
+        <h1 class="titulo-pagina">Proveedores</h1>
+        <a class="boton boton-principal" href="{% url 'facturacion:proveedor_crear' %}">Nuevo proveedor</a>
+    </div>
+    <form method="get" class="busqueda">
+        <input type="search" name="q" value="{{ q }}" placeholder="Buscar por nombre, apellido o RUC">
+        <button type="submit">Buscar</button>
+    </form>
+    <div class="tabla-contenedor">
+        <table>
+            <thead><tr><th>Logo</th><th>Nombre</th><th>RUC</th><th>Correo</th><th>Contacto</th><th>Acciones</th></tr></thead>
+            <tbody>
+                {% for proveedor in proveedores %}
+                    <tr>
+                        <td>{% if proveedor.logo %}<img class="miniatura" src="{{ proveedor.logo.url }}" alt="">{% else %}<span class="sin-foto">—</span>{% endif %}</td>
+                        <td>{{ proveedor }}</td>
+                        <td>{{ proveedor.ruc }}</td>
+                        <td>{{ proveedor.email|default:"—" }}</td>
+                        <td>{{ proveedor.contacto|default:"—" }}</td>
+                        <td class="acciones-tabla">
+                            <a href="{% url 'facturacion:proveedor_editar' proveedor.pk %}">Editar</a>
+                            <a href="{% url 'facturacion:proveedor_eliminar' proveedor.pk %}">Eliminar</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="vacio">No hay proveedores registrados.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "facturacion/paginacion.html" %}
+</section>
+{% endblock %}

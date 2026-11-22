@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block titulo %}Factura · Venta #{{ venta.pk }}{% endblock %}
+{% block contenido %}
+<section class="panel factura-panel">
+    <div class="factura-encabezado">
+        <div>
+            <p class="etiqueta">Factura · Venta #{{ venta.pk }}</p>
+            <p>{{ venta.fecha_hora|date:"d/m/Y H:i" }} · Pago: {{ venta.get_tipo_pago_display }}</p>
+        </div>
+        <address>
+            <strong>{{ venta.cliente }}</strong><br>
+            Cédula {{ venta.cliente.cedula }}
+        </address>
+    </div>
+
+    <div class="tabla-contenedor">
+        <table class="tabla-ventas">
+            <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr></thead>
+            <tbody>
+                {% for detalle in venta.detalles.all %}
+                    <tr>
+                        <td>{{ detalle.producto.nombre }}</td>
+                        <td>{{ detalle.cantidad }}</td>
+                        <td>${{ detalle.precio }}</td>
+                        <td>${{ detalle.subtotal|floatformat:2 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <dl class="factura-totales">
+        <dt>Subtotal</dt><dd>${{ venta.subtotal }}</dd>
+        <dt>IVA {{ iva_porcentaje }}%</dt><dd>${{ venta.iva }}</dd>
+        <dt class="total-final">Total</dt><dd class="total-final">${{ venta.total }}</dd>
+    </dl>
+    <p class="texto-suave factura-auditoria">
+        Registrada por {{ venta.user|default:"—" }} · Última modificación {{ venta.fecha_modificacion|date:"d/m/Y H:i" }}
+    </p>
+    <div class="botonera acciones-factura">
+        <button class="boton" type="button" onclick="window.print()">Imprimir</button>
+        <a class="boton-secundario-accion" href="{% url 'facturacion:venta_editar' venta.pk %}">Editar</a>
+        <a class="boton-secundario-accion" href="{% url 'facturacion:venta_lista' %}">Volver</a>
+    </div>
+</section>
+{% endblock %}

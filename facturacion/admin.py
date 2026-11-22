@@ -1,37 +1,66 @@
+# =====================================================================
+# facturacion/admin.py · panel de administración (/admin/)
+# =====================================================================
 from django.contrib import admin
 
-from .models import Categoria, Cliente, Marca, Perfil, Producto
+from .models import (
+    Categoria, Cliente, Compra, DetalleCompra, DetalleVenta, Marca,
+    Perfil, Producto, Proveedor, Venta,
+)
 
 
-@admin.register(Categoria)
-class CategoriaAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "activo")
-    search_fields = ("nombre",)
-    list_filter = ("activo",)
+class BaseAdmin(admin.ModelAdmin):
+    """Admin común: muestra los campos del ModeloBase y llena user solo."""
+    readonly_fields = ("user", "fecha_creacion", "fecha_modificacion")   # se ven, pero no se editan
+
+    def save_model(self, request, obj, form, change):
+        obj.user = request.user                  # quién guardó desde el admin
+        super().save_model(request, obj, form, change)
 
 
-@admin.register(Marca)
-class MarcaAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "pais_origen", "activo")
-    search_fields = ("nombre", "pais_origen")
-    list_filter = ("activo",)
+admin.site.register([Categoria, Marca, Cliente, Proveedor, Perfil], BaseAdmin)   # varios modelos a la vez
 
 
 @admin.register(Producto)
-class ProductoAdmin(admin.ModelAdmin):
+class ProductoAdmin(BaseAdmin):
     list_display = ("nombre", "marca", "precio", "stock", "activo")
-    search_fields = ("nombre", "marca__nombre")
+    search_fields = ("nombre",)
     list_filter = ("marca", "categorias", "activo")
     filter_horizontal = ("categorias",)
 
 
-@admin.register(Cliente)
-class ClienteAdmin(admin.ModelAdmin):
-    list_display = ("cedula", "apellidos", "nombres", "email", "telefono")
-    search_fields = ("cedula", "apellidos", "nombres")
+class DetalleVentaInline(admin.TabularInline):   # Inline: los detalles se editan DENTRO de la venta
+    model = DetalleVenta
+    extra = 1                                    # 1 fila vacía para agregar
+    exclude = ("user",)
 
 
-@admin.register(Perfil)
-class PerfilAdmin(admin.ModelAdmin):
-    list_display = ("usuario", "cedula", "telefono", "cargo")
-    search_fields = ("usuario__username", "cedula")
+@admin.register(Venta)
+class VentaAdmin(BaseAdmin):
+    list_display = ("id", "cliente", "fecha_hora", "tipo_pago", "total")
+    list_filter = ("tipo_pago",)
+    readonly_fields = BaseAdmin.readonly_fields + ("subtotal", "iva", "total")
+    inlines = [DetalleVentaInline]
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)   # primero guarda los detalles
+        form.instance.calcular_totales()                        # luego recalcula los totales
+        # OJO: el admin NO mueve el stock. Las ventas reales se hacen desde el sistema.
+
+
+class DetalleCompraInline(admin.TabularInline):
+    model = DetalleCompra
+    extra = 1
+    exclude = ("user",)
+
+
+@admin.register(Compra)
+class CompraAdmin(BaseAdmin):
+    list_display = ("id", "proveedor", "fecha_hora", "tipo_pago", "total")
+    list_filter = ("tipo_pago",)
+    readonly_fields = BaseAdmin.readonly_fields + ("subtotal", "iva", "total")
+    inlines = [DetalleCompraInline]
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        form.instance.calcular_totales()

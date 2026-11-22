@@ -4,7 +4,7 @@
 <section class="tarjeta">
     <h1 class="titulo-pagina">Eliminar categoría</h1>
     <p>¿Seguro que deseas eliminar la categoría <strong>{{ categoria.nombre }}</strong>?</p>
-    <p class="texto-suave">Se quitará de {{ categoria.cantidad_productos }} producto(s); los productos no se eliminarán.</p>
+    <p class="texto-suave">Se quitará de {{ categoria.productos.count }} producto(s); los productos no se eliminarán.</p>
     <form method="post" class="botonera">
         {% csrf_token %}
         <button type="submit">Sí, eliminar</button>

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titulo %}Ventas{% endblock %}
+{% block contenido %}
+<section class="panel ventas-panel">
+    <div class="encabezado-seccion">
+        <h1 class="titulo-pagina">Ventas</h1>
+        <a class="boton boton-principal" href="{% url 'facturacion:venta_crear' %}">+ Nueva venta</a>
+    </div>
+    <form method="get" class="busqueda ventas-filtros">
+        <input type="search" name="q" value="{{ q }}" placeholder="Apellido o cédula del cliente">
+        <select name="tipo_pago" aria-label="Tipo de pago">
+            <option value="">Todos los tipos de pago</option>
+            {% for valor, etiqueta in tipos_pago %}
+                <option value="{{ valor }}" {% if tipo_pago == valor %}selected{% endif %}>{{ etiqueta }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Filtrar</button>
+    </form>
+    <div class="tabla-contenedor">
+        <table class="tabla-ventas">
+            <thead>
+                <tr><th>N.º</th><th>Fecha</th><th>Cliente</th><th>Pago</th><th>Total</th><th>Acciones</th></tr>
+            </thead>
+            <tbody>
+                {% for venta in ventas %}
+                    <tr>
+                        <td>{{ venta.pk }}</td>
+                        <td>{{ venta.fecha_hora|date:"d/m/Y H:i" }}</td>
+                        <td>{{ venta.cliente }}</td>
+                        <td>{{ venta.get_tipo_pago_display }}</td>
+                        <td>${{ venta.total }}</td>
+                        <td class="acciones-tabla">
+                            <a href="{% url 'facturacion:venta_detalle' venta.pk %}">Ver</a>
+                            <a href="{% url 'facturacion:venta_editar' venta.pk %}">Editar</a>
+                            <a class="accion-peligro" href="{% url 'facturacion:venta_eliminar' venta.pk %}">Eliminar</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="6" class="vacio">No hay ventas que coincidan con la búsqueda.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "facturacion/paginacion.html" %}
+</section>
+{% endblock %}

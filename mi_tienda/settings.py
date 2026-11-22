@@ -88,18 +88,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        "OPTIONS": {"min_length": 8},
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "facturacion.password_validators.DigitsOnlyPasswordValidator",
-    },
-]
+AUTH_PASSWORD_VALIDATORS = []
 
 
 # Internationalization
@@ -119,6 +108,10 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Archivos que SUBEN los usuarios (fotos de productos, logos de proveedores)
+MEDIA_URL = "media/"                               # dirección web de los archivos subidos
+MEDIA_ROOT = BASE_DIR / "media"                    # carpeta donde se guardan
 
 
 # Email

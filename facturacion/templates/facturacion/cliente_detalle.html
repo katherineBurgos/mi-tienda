@@ -9,8 +9,26 @@
         <dt>Correo</dt><dd>{{ cliente.email|default:"—" }}</dd>
         <dt>Teléfono</dt><dd>{{ cliente.telefono|default:"—" }}</dd>
         <dt>Dirección</dt><dd>{{ cliente.direccion|default:"—" }}</dd>
-        <dt>Registrado</dt><dd>{{ cliente.fecha_registro|date:"d/m/Y H:i" }}</dd>
+        <dt>Registrado</dt><dd>{{ cliente.fecha_creacion|date:"d/m/Y H:i" }}</dd>
     </dl>
+    <h2>Ventas del cliente</h2>
+    <div class="tabla-contenedor">
+        <table class="tabla-ventas">
+            <thead><tr><th>N.º</th><th>Fecha</th><th>Pago</th><th>Total</th></tr></thead>
+            <tbody>
+                {% for venta in cliente.ventas.all %}
+                    <tr>
+                        <td><a href="{% url 'facturacion:venta_detalle' venta.pk %}">{{ venta.pk }}</a></td>
+                        <td>{{ venta.fecha_hora|date:"d/m/Y H:i" }}</td>
+                        <td>{{ venta.get_tipo_pago_display }}</td>
+                        <td>${{ venta.total }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="vacio">Este cliente aún no tiene ventas.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <div class="botonera">
         <a class="boton boton-principal" href="{% url 'facturacion:cliente_editar' cliente.pk %}">Editar</a>
         <a class="boton-secundario-accion" href="{% url 'facturacion:cliente_lista' %}">Volver a clientes</a>

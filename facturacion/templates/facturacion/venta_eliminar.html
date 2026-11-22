@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<section class="tarjeta confirmacion-venta">
+    <h1 class="titulo-pagina">¿Eliminar la Venta #{{ venta.pk }} de {{ venta.cliente }}?</h1>
+    <p>Al confirmar, estos productos regresarán al inventario:</p>
+    <ul>
+        {% for detalle in venta.detalles.all %}
+            <li>{{ detalle.cantidad }} × {{ detalle.producto.nombre }}</li>
+        {% endfor %}
+    </ul>
+    <form method="post" class="botonera">
+        {% csrf_token %}
+        <button class="boton-peligro" type="submit">Sí, eliminar</button>
+        <a class="boton-secundario-accion" href="{% url 'facturacion:venta_lista' %}">No, volver</a>
+    </form>
+</section>
+{% endblock %}

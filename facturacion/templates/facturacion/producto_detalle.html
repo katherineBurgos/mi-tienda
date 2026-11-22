@@ -4,6 +4,7 @@
 <section class="tarjeta">
     <p class="etiqueta">Detalle del producto</p>
     <h1 class="titulo-pagina">{{ producto.nombre }}</h1>
+    {% if producto.imagen %}<p><img class="foto-detalle" src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"></p>{% endif %}
     <dl class="detalle">
         <dt>Marca</dt><dd>{{ producto.marca }}</dd>
         <dt>Descripción</dt><dd>{{ producto.descripcion|default:"Sin descripción" }}</dd>

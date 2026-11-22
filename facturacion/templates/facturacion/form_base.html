@@ -3,8 +3,10 @@
 {% block contenido %}
 <section class="tarjeta formulario">
     <h1 class="titulo-pagina">{{ titulo }}</h1>
-    <form method="post" novalidate>
+    {# enctype multipart: obligatorio para que el formulario pueda ENVIAR archivos (fotos, logos) #}
+    <form method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
+        {% block antes_campos %}{% endblock %}
         {{ form.as_p }}
         <div class="botonera">
             <button type="submit">{{ boton }}</button>

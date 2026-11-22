@@ -12,10 +12,11 @@
     </form>
     <div class="tabla-contenedor">
         <table>
-            <thead><tr><th>Producto</th><th>Marca</th><th>Categorías</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
+            <thead><tr><th>Foto</th><th>Producto</th><th>Marca</th><th>Categorías</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead>
             <tbody>
                 {% for producto in productos %}
                     <tr>
+                        <td>{% if producto.imagen %}<img class="miniatura" src="{{ producto.imagen.url }}" alt="">{% else %}<span class="sin-foto">—</span>{% endif %}</td>
                         <td><a href="{% url 'facturacion:producto_detalle' producto.pk %}">{{ producto.nombre }}</a></td>
                         <td>{{ producto.marca.nombre }}</td>
                         <td>{% for categoria in producto.categorias.all %}{{ categoria.nombre }}{% if not forloop.last %}, {% endif %}{% empty %}—{% endfor %}</td>
@@ -27,7 +28,7 @@
                         </td>
                     </tr>
                 {% empty %}
-                    <tr><td colspan="6" class="vacio">No hay productos que coincidan con la búsqueda.</td></tr>
+                    <tr><td colspan="7" class="vacio">No hay productos que coincidan con la búsqueda.</td></tr>
                 {% endfor %}
             </tbody>
         </table>

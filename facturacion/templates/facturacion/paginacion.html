@@ -1,14 +1,14 @@
-{% if pagina.paginator.num_pages > 1 %}
+{% if is_paginated %}
 <nav class="paginacion" aria-label="Paginación">
     <div>
-        {% if pagina.has_previous %}
-            <a href="?q={{ q|urlencode }}&page={{ pagina.previous_page_number }}">Anterior</a>
+        {% if page_obj.has_previous %}
+            <a href="?q={{ q|urlencode }}&tipo_pago={{ tipo_pago|urlencode }}&proveedor={{ proveedor|urlencode }}&page={{ page_obj.previous_page_number }}">Anterior</a>
         {% endif %}
     </div>
-    <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+    <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
     <div>
-        {% if pagina.has_next %}
-            <a href="?q={{ q|urlencode }}&page={{ pagina.next_page_number }}">Siguiente</a>
+        {% if page_obj.has_next %}
+            <a href="?q={{ q|urlencode }}&tipo_pago={{ tipo_pago|urlencode }}&proveedor={{ proveedor|urlencode }}&page={{ page_obj.next_page_number }}">Siguiente</a>
         {% endif %}
     </div>
 </nav>

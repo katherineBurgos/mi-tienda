@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<section class="tarjeta formulario venta-formulario">
+    <h1 class="titulo-pagina">{{ titulo }}</h1>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}<div class="errorlist">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="venta-cabecera">
+            <div>
+                {{ form.proveedor.label_tag }}
+                {{ form.proveedor }}
+                {{ form.proveedor.errors }}
+            </div>
+            <div>
+                {{ form.fecha_hora.label_tag }}
+                {{ form.fecha_hora }}
+                {{ form.fecha_hora.errors }}
+            </div>
+            <div>
+                {{ form.tipo_pago.label_tag }}
+                {{ form.tipo_pago }}
+                {{ form.tipo_pago.errors }}
+            </div>
+        </div>
+
+        <div class="encabezado-seccion venta-productos-titulo">
+            <h2>Productos</h2>
+        </div>
+        {{ detalles.management_form }}
+        {% if detalles.non_form_errors %}<div class="errorlist">{{ detalles.non_form_errors }}</div>{% endif %}
+        <div class="tabla-contenedor">
+            <table class="tabla-ventas tabla-detalles-venta" id="tabla-detalles-compra">
+                <thead><tr><th>Producto</th><th>Cantidad</th><th>Costo unitario</th><th>Quitar</th></tr></thead>
+                <tbody>
+                    {% for detalle in detalles %}
+                        <tr class="fila-detalle-compra">
+                            <td>
+                                {{ detalle.id }}
+                                {{ detalle.producto }}
+                                {{ detalle.producto.errors }}
+                                {% if detalle.non_field_errors %}{{ detalle.non_field_errors }}{% endif %}
+                            </td>
+                            <td>{{ detalle.cantidad }}{{ detalle.cantidad.errors }}</td>
+                            <td>{{ detalle.precio }}{{ detalle.precio.errors }}</td>
+                            <td class="columna-quitar">{{ detalle.DELETE }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <template id="detalle-compra-vacio">
+            <tr class="fila-detalle-compra">
+                <td>{{ detalles.empty_form.id }}{{ detalles.empty_form.producto }}</td>
+                <td>{{ detalles.empty_form.cantidad }}</td>
+                <td>{{ detalles.empty_form.precio }}</td>
+                <td class="columna-quitar">{{ detalles.empty_form.DELETE }}</td>
+            </tr>
+        </template>
+        <button class="boton boton-secundario boton-agregar-detalle" type="button" id="agregar-detalle-compra">+ Agregar producto</button>
+        <p class="texto-suave ayuda-venta">El costo unitario lo escribes tú (lo que cobró el proveedor). Al guardar, el stock de cada producto SUBE y el IVA del 15% se calcula solo.</p>
+
+        <div class="botonera">
+            <button type="submit">{{ boton }}</button>
+            <a class="boton-secundario-accion" href="{{ volver_url }}">Cancelar</a>
+        </div>
+    </form>
+</section>
+<script>
+(() => {
+    const boton = document.getElementById("agregar-detalle-compra");
+    const tabla = document.querySelector("#tabla-detalles-compra tbody");
+    const plantilla = document.getElementById("detalle-compra-vacio");
+    const total = document.getElementById("id_{{ detalles.prefix }}-TOTAL_FORMS");
+    boton.addEventListener("click", () => {
+        const indice = Number(total.value);
+        const fila = plantilla.innerHTML.replace(/__prefix__/g, indice);
+        tabla.insertAdjacentHTML("beforeend", fila);
+        total.value = indice + 1;
+    });
+})();
+</script>
+{% endblock %}

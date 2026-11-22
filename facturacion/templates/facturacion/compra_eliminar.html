@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block titulo %}Eliminar compra{% endblock %}
+{% block contenido %}
+<section class="tarjeta confirmacion-venta">
+    <h1 class="titulo-pagina">¿Eliminar la Compra #{{ compra.pk }} de {{ compra.proveedor }}?</h1>
+    <p>Al confirmar, el stock de estos productos BAJARÁ:</p>
+    <ul>
+        {% for detalle in compra.detalles.all %}
+            <li>{{ detalle.cantidad }} × {{ detalle.producto.nombre }}</li>
+        {% endfor %}
+    </ul>
+    <form method="post" class="botonera">
+        {% csrf_token %}
+        <button class="boton-peligro" type="submit">Sí, eliminar</button>
+        <a class="boton-secundario-accion" href="{% url 'facturacion:compra_lista' %}">No, volver</a>
+    </form>
+</section>
+{% endblock %}

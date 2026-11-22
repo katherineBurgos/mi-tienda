@@ -1,1 +1,6 @@
 {% extends "facturacion/form_base.html" %}
+{% block antes_campos %}
+    {% if form.instance.imagen %}
+        <p class="foto-actual"><img class="miniatura-grande" src="{{ form.instance.imagen.url }}" alt="Foto actual de {{ form.instance.nombre }}"></p>
+    {% endif %}
+{% endblock %}

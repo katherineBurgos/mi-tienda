@@ -30,6 +30,7 @@
             </tbody>
         </table>
     </div>
-    <p class="texto-suave">Total: {{ marcas|length }} marca(s)</p>
+    <p class="texto-suave">Total: {{ paginator.count }} marca(s)</p>
+    {% include "facturacion/paginacion.html" %}
 </section>
 {% endblock %}

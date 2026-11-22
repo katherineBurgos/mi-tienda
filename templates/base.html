@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block titulo %}Inicio{% endblock %} | Mi Tienda</title>
-    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}?v=20261121-fondo-ilustrado">
 </head>
 <body>
     <header class="barra">
@@ -18,6 +18,9 @@
                     <a href="{% url 'facturacion:producto_lista' %}">Productos</a>
                     <a href="{% url 'facturacion:categoria_lista' %}">Categorías</a>
                     <a href="{% url 'facturacion:cliente_lista' %}">Clientes</a>
+                    <a href="{% url 'facturacion:proveedor_lista' %}">Proveedores</a>
+                    <a href="{% url 'facturacion:compra_lista' %}">Compras</a>
+                    <a href="{% url 'facturacion:venta_lista' %}">Facturas</a>
                     <a href="{% url 'facturacion:mi_perfil' %}">Mi perfil</a>
                     <span class="saludo">Hola, {{ user.username }}</span>
                     <form method="post" action="{% url 'logout' %}" class="inline-form">
